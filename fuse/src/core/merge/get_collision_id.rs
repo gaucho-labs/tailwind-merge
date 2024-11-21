@@ -455,6 +455,8 @@ pub fn get_collision_id(classes: &[&str], arbitrary: &str) -> Result<&'static st
         // TODO: plus-lighter not valid
         ["bg", "blend", mode @ ..] if valid_blend(mode) => Ok("background-blend-mode"),
 
+        ["bg", "opacity", ..]  => Ok("background-opacity"),
+
         // https://tailwindcss.com/docs/background-color
         ["bg", ..] => Ok("background-color"),
 
@@ -980,5 +982,14 @@ mod test {
 
         let result = get_collision_id(&["border", "b"], "");
         assert_eq!(result, Ok("border-w-b"));
+    }
+
+    #[test]
+    fn parse_bg_opacity() {
+        let result = get_collision_id(&["bg", "opacity", "50"], "");
+        assert_eq!(result, Ok("background-opacity"));
+        
+        let result = get_collision_id(&["bg", "opacity"], "50%");
+        assert_eq!(result, Ok("background-opacity"));
     }
 }
